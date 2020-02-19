@@ -1,36 +1,41 @@
 import React from 'react';
-import { StyleSheet, ScrollView, View, Text, TouchableHighlight } from 'react-native';
+import {StyleSheet, ScrollView, View, Text, TouchableHighlight} from 'react-native';
 
-export default function ScrollableList({items}) {
-    return(
-        <ScrollView style={styles.pokemonList}>
-        {items.map(pokemon => {
-          return (
-            <TouchableHighlight onPress={() => console.log('tapped')}>
-                <View key={pokemon.name} style={styles.item}>
-                    <Text style={styles.h2}>{pokemon.name}</Text>
-                </View>
-            </TouchableHighlight>
-          )
-        })}
-        </ScrollView>
-    );
-};
+export default function ScrollableList({items, navigation}) {
+  return(
+    <ScrollView style={styles.pokemonList}>
+      {items.map(pokemon => {
+        return(
+          <TouchableHighlight 
+            key={pokemon.name} 
+            onPress={() => {
+              navigation.navigate('Pokemon Details', {pokemon: pokemon})
+            }}
+          >
+            <View  style={styles.item}>
+              <Text style={styles.h2}>{pokemon.name}</Text>
+            </View>
+          </TouchableHighlight>
+        )
+      })}
+    </ScrollView>
+  )
+}
 
 const styles = StyleSheet.create({
-    pokemonList: {
-        flex: 1,
-        flexDirection: 'column',
-      },
-      item: {
-        backgroundColor: 'white',
-        alignItems: 'center',
-        borderBottomWidth: 2,
-        height: 40,
-        borderBottomColor: 'black',
-        justifyContent: 'center',
-      },
-      h2: {
-        fontSize: 20,
-      },
-});
+  pokemonList: {
+    flex: 1,
+    flexDirection: 'column',
+  },
+  item: {
+    backgroundColor: 'white',
+    alignItems: 'center',
+    borderBottomWidth: 2,
+    borderBottomColor: 'black',
+    height: 40,
+    justifyContent: 'center'
+  },
+  h2: {
+    fontSize: 20
+  }
+})

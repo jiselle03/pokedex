@@ -1,34 +1,48 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Header, ScrollableList } from './components';
+import 'react-native-gesture-handler';
+import React, { useEffect, useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import { View, Text } from 'react-native'; // React Native API Reference -> https://facebook.github.io/react-native/docs/activityindicator
+import { Home } from './components';
 
-const POKEMON_API_ENDPOINT = 'https://pokeapi.co/api/v2';
-const GET_150_POKEMON_PATH = 'pokemon/?limit=150';
+const POKEMON_API_ENDPOINT = "https://pokeapi.co/api/v2/"
+const GET_50_POKEMON_PATH = "pokemon?limit=50"
+
+const Stack = createStackNavigator();
 
 export default function App() {
   const [pokemonList, setPokemonList] = useState([]);
-
   useEffect(() => {
-    fetch(`${POKEMON_API_ENDPOINT}/${GET_150_POKEMON_PATH}`)
-      .then(res => res.json())
+    fetch(`${POKEMON_API_ENDPOINT}${GET_50_POKEMON_PATH}`)
+      .then(res => {
+        return res.json()
+      })
       .then(payload => {
-        setPokemonList(payload.results);
-      });
+        setPokemonList(payload.results)
+      })
   }, [])
-
   return (
-    <View style={styles.container}>
-      <Header />
-      <ScrollableList items={pokemonList} />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Pokedex"
+          component={({navigation}) => {
+            return(
+              <Home pokemonList={pokemonList} navigation={navigation} />
+            );
+          }}
+          options={{title: 'Pokédex'}}
+        />
+        <Stack.Screen
+          name="Pokemon Details"
+          component={({navigation, route}) => {
+            const pokemon = route.params.pokemon;
+            return(
+              <View><Text>{pokemon.name}</Text></View>
+            )
+          }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'stretch',
-    flexDirection: 'column',
-  },
-});
+}
